@@ -1,22 +1,28 @@
-import axios from 'axios';
-import FormData from 'form-data';
-import fs from 'fs';
-import formidable from 'formidable-serverless';
 
-export default function handler(req, res) {
+import FormData from 'form-data';
+import formidable from 'formidable';
+import fs from 'fs';
+import axios from 'axios';
+
+export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const form = new formidable.IncomingForm();
+    try {
+        const form = formidable({});
 
-    form.parse(req, (err, fields, files) => {
-        if (err) {
-            console.error('Form parse error:', err);
-            return res.status(500).json({ error: 'Error parsing the form data' });
-        }
+        const { fields, files } = await new Promise((resolve, reject) => {
+            form.parse(req, (err, fields, files) => {
+                if (err) {
+                    console.error('Form parse error:', err);
+                    return reject('Error parsing the form data');
+                }
+                resolve({ fields, files });
+            });
+        });
 
-        const audioFile = files?.file?.filepath;
+        const audioFile = files?.file?.path;
         if (!audioFile) {
             return res.status(400).json({ error: 'No audio file found' });
         }
@@ -27,21 +33,17 @@ export default function handler(req, res) {
 
         const openaiApiKey = process.env.OPENAI_API_KEY;
 
-        console.log(openaiApiKey);
-
-        axios.post('https://api.openai.com/v1/your-api-endpoint', formData, {
+        const response = await axios.post('https://api.openai.com/v1/audio/transcriptions', formData, {
             headers: {
                 ...formData.getHeaders(),
                 'Authorization': `Bearer ${openaiApiKey}`,
             },
-        })
-            .then(response => {
-                console.log(response);
-                res.status(200).json({ transcript: response.data });
-            })
-            .catch(error => {
-                console.error('Error calling OpenAI API:', error);
-                res.status(500).json({ error: 'Error processing audio file' });
-            });
-    });
+        });
+
+        res.status(200).json({ transcript: response.data });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Error processing audio file' });
+    }
 }
+

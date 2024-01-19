@@ -45,7 +45,13 @@ export default function Home() {
                 method: 'POST',
                 body: formData,
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        // 处理非 2xx 响应，例如 4xx 或 5xx 错误
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     setText(data.transcript);
                 })
