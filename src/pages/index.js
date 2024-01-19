@@ -56,6 +56,7 @@ export default function Home() {
 
     return (
         <main className="min-h-screen bg-gray-100 flex flex-col justify-center items-center p-6 relative">
+            {(!isLoading &&
             <div className="bg-white shadow-lg rounded-lg p-8 mb-6 relative z-10">
                 <div className="flex flex-col items-center justify-center gap-4">
                     <button
@@ -78,17 +79,17 @@ export default function Home() {
                     )}
                 </div>
 
-                {!isLoading && <div className="text-display-container mt-8">
+                <div className="text-display-container mt-8">
                     <h2 className="text-xl font-semibold mb-4 text-gray-700">Converted Text:</h2>
                     <div className="text-area border border-gray-300 rounded p-4 max-w-xl w-full bg-gray-50">
                         {text || ""}
                     </div>
-                </div>}
-            </div>
+                </div>
+            </div>)}
 
             {isLoading && (
                 <div>
-                    <p className="items-center text-4xl text-yellow-400 py-1">Loading...</p>
+                    <p className="items-center text-4xl text-yellow-400 py-1 px-3">Loading...</p>
 
                 <div aria-label="Orange and tan hamster running in a metal wheel" role="img"
                      className="wheel-and-hamster">
