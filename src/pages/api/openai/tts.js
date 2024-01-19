@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         formData.append('file', fs.createReadStream(audioFile));
         formData.append('model', 'whisper-1'); // Adjust according to API requirements
 
-        const openaiApiKey = process.env.OPENAI_API_KEY;
+        const openaiApiKey = process.env.NEXT_PUBLIC_API_KEY;
 
         const response = await axios.post('https://api.openai.com/v1/audio/transcriptions', formData, {
             headers: {
