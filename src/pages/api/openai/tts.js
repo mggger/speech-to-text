@@ -27,6 +27,8 @@ export default function handler(req, res) {
 
         const openaiApiKey = process.env.OPENAI_API_KEY;
 
+        console.log(openaiApiKey);
+
         axios.post('https://api.openai.com/v1/your-api-endpoint', formData, {
             headers: {
                 ...formData.getHeaders(),
@@ -34,6 +36,7 @@ export default function handler(req, res) {
             },
         })
             .then(response => {
+                console.log(response);
                 res.status(200).json({ transcript: response.data });
             })
             .catch(error => {
