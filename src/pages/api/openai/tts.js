@@ -4,6 +4,12 @@ import formidable from 'formidable';
 import fs from 'fs';
 import axios from 'axios';
 
+export const config = {
+    api: {
+        bodyParser: false, // Disallow body parsing, consume as stream
+    },
+};
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
