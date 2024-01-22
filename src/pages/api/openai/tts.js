@@ -32,15 +32,16 @@ export default async function handler(req, res) {
         const audioFile = files.file && files.file.length > 0 ? files.file[0].filepath : null;
         const newFilePath = audioFile + '.mpeg';
         if (audioFile) {
-            // 设置新的文件路径，包括 .mpeg 扩展名
+            // Set new file path including .mpeg extension
 
-            // 重命名文件以包含正确的扩展名
+
+            // Rename the file to include the correct extension
             fs.rename(audioFile, newFilePath, (err) => {
                 if (err) {
                     console.error('Error renaming file:', err);
                 } else {
                     console.log('File renamed successfully to:', newFilePath);
-                    // 在这里继续处理新文件路径（例如，上传到 OpenAI API）
+                    // Continue processing the new file path here (e.g., upload to OpenAI API)
                 }
             });
         } else {
@@ -51,7 +52,7 @@ export default async function handler(req, res) {
         formData.append('file', fs.createReadStream(newFilePath));
         formData.append('model', 'whisper-1');
 
-        const openaiApiKey = process.env.NEXT_PUBLIC_API_KEY; // 更改为非公开环境变量
+        const openaiApiKey = process.env.NEXT_PUBLIC_API_KEY; // Change to a non-public environment variable
 
         const response = await axios.post('https://api.openai.com/v1/audio/transcriptions', formData, {
             headers: {
